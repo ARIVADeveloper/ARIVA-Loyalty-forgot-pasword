@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reset your ARIVA Loyalty PIN</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f0f4fa;
+    }
+    .container {
+      padding: 19px 20px 16px 20px;
+      background: #fff;
+      border: 1px solid #e0e7ff;
+      border-radius: 12px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      position: relative;
+    }
+    .logo {
+      width: 70px;
+      height: 70px;
+      margin-bottom: -10px;
+      display: inline-block;
+    }
+    input {
+      margin: 6px 0;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      border: 1px solid #bfcfff;
+      border-radius: 6px;
+      background: #f8faff;
+      transition: border-color 0.2s;
+      outline: none;
+      box-sizing: border-box;
+    }
+    input:focus {
+      border-color: #007bff;
+      background: #eef6ff;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    button:hover, button:focus {
+      background: #0056b3;
+    }
+    #message {
+      margin-top: 2px;
+      font-size: 14px;
+      color: red;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    #message.success {
+      color: #22bb33;
+      font-weight: bold;
+    }
+    .success-icon {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="/assets//ariva-logo.png" alt="ARIVA Logo" class="logo" />
+    <h2>Reset Your PIN</h2>
+    <input 
+      type="text" 
+      id="pin" 
+      placeholder="Enter 5-digit PIN" 
+      maxlength="5"
+      inputmode="numeric"
+    />
+    <button onclick="resetPin()">Reset PIN</button>
+    <p id="message"></p>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    // 🔹 Replace with your Firebase config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // 🔹 Helper: Always return 6-char string
+    function formatPin(pin) {
+      return pin.padEnd(6, "0");
+    }
+
+    async function resetPin() {
+      const params = new URLSearchParams(window.location.search);
+      const oobCode = params.get("oobCode");
+      const pin = document.getElementById("pin").value.trim();
+      const messageEl = document.getElementById("message");
+
+      if (!/^\d{5}$/.test(pin)) {
+        messageEl.className = "";
+        messageEl.innerText = "PIN must be exactly 5 digits.";
+        return;
+      }
+
+      const adjustedPin = formatPin(pin); // 🔹 padded automatically
+
+      try {
+        await confirmPasswordReset(auth, oobCode, adjustedPin);
+        messageEl.className = "success";
+        messageEl.innerHTML = `<span class="success-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 20 20">
+            <circle cx="10" cy="10" r="9" fill="#22bb33"/>
+            <path d="M6 10.5l2.5 2.5 5-5" stroke="#fff" stroke-width="2" fill="none"/>
+          </svg>
+        </span> PIN reset successful! You can now log in.`;
+      } catch (error) {
+        messageEl.className = "";
+        messageEl.innerText = "Error: " + error.message;
+      }
+    }
+
+    // 🔹 Restrict input to numbers only and max 5 digits
+    document.getElementById("pin").addEventListener("input", function() {
+      this.value = this.value.replace(/\D/g, '').slice(0, 5);
+    });
+
+    // expose to global scope
+    window.resetPin = resetPin;
+  </script>
+</body>
+</html>
