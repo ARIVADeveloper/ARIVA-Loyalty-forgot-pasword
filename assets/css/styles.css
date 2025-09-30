@@ -152,7 +152,6 @@ input.error {
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-secondary);
-  transition: all var(--animation-duration) ease;
   cursor: pointer;
   pointer-events: all;
   width: 24px;
@@ -162,20 +161,27 @@ input.error {
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  background: transparent;
+  background: transparent !important;
   border: none;
   outline: none;
 }
 
 .input-icon:hover {
   color: var(--primary-color);
-  background: rgba(0, 123, 255, 0.1);
+  transform: translateY(-50%);
 }
 
 .input-icon:focus {
   color: var(--primary-color);
-  background: rgba(0, 123, 255, 0.1);
+  background: transparent !important;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+  transform: translateY(-50%);
+}
+
+.input-icon:active {
+  color: var(--primary-color);
+  background: transparent !important;
+  transform: translateY(-50%);
 }
 
 .input-icon svg {
