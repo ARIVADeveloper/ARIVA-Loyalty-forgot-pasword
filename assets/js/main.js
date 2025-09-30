@@ -174,31 +174,33 @@ function showModal(title, message, isError = true) {
     modalIcon.classList.remove('error-icon');
     modalIcon.classList.add('success-icon');
     
-    // Updated window closing logic
+    // New window closing logic
     modalButton.onclick = () => {
       modalContent.classList.add('loading');
+      modalButton.disabled = true;
+      modalButton.textContent = 'Closing...';
       
-      // Try multiple methods to close the window
-      const closeWindow = () => {
-        window.close();
-        window.open('', '_self').close();
-        window.location.href = 'about:blank';
-        window.open('', '_self', '');
-        window.top.close();
-      };
-
-      try {
-        closeWindow();
-      } catch (e) {
-        console.log('Could not close window automatically');
+      // Try to close through opener first
+      if (window.opener && !window.opener.closed) {
+        window.opener.postMessage('closeResetWindow', '*');
       }
-
-      // Fallback if window.close() is blocked
+      
+      // Attempt normal close
       setTimeout(() => {
-        modalContent.classList.remove('loading');
-        modalSubtitle.textContent = 'Please close this window manually';
-        closeModal();
-      }, 1000);
+        try {
+          window.close();
+        } catch (e) {
+          console.log('Direct window.close() failed');
+        }
+        
+        // If we're still here after 1 second, show manual close message
+        setTimeout(() => {
+          modalContent.classList.remove('loading');
+          modalButton.disabled = false;
+          modalButton.textContent = 'Close Window';
+          modalSubtitle.textContent = 'Please close this window manually using your browser controls';
+        }, 1000);
+      }, 100);
     };
   } else {
     // Error state
