@@ -31,7 +31,7 @@ function formatPin(pin) {
 function validatePins() {
   const pin = document.getElementById("pin");
   const confirmPin = document.getElementById("confirmPin");
-  const button = document.querySelector('button[onclick="resetPin()"]');
+  const button = document.getElementById("resetButton");
   const pinValidation = pin.nextElementSibling.nextElementSibling;
   const confirmValidation = confirmPin.nextElementSibling.nextElementSibling;
   
@@ -80,7 +80,7 @@ async function resetPin() {
   const pin = pinInput.value.trim();
   const confirmPin = confirmPinInput.value.trim();
   const messageEl = document.getElementById("message");
-  const button = document.querySelector('button[onclick="resetPin()"]');
+  const button = document.getElementById("resetButton");
 
   // Clear previous states
   messageEl.className = "";
@@ -120,7 +120,7 @@ async function resetPin() {
     );
     document.getElementById('pin').disabled = true;
     document.getElementById('confirmPin').disabled = true;
-    document.querySelector('button').disabled = true;
+    document.getElementById('resetButton').disabled = true;
   } catch (error) {
     let title = "Error";
     let message = "An error occurred while resetting your PIN.";
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       showModal(title, message);
       document.getElementById('pin').disabled = true;
-      document.querySelector('button').disabled = true;
+      document.getElementById('resetButton').disabled = true;
     });
   }
 });
