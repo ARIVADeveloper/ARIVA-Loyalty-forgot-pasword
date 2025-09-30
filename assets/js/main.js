@@ -80,7 +80,7 @@ async function resetPin() {
   const pin = pinInput.value.trim();
   const confirmPin = confirmPinInput.value.trim();
   const messageEl = document.getElementById("message");
-  const button = document.querySelector('button');
+  const button = document.querySelector('button[onclick="resetPin()"]');
 
   // Clear previous states
   messageEl.className = "";
@@ -120,7 +120,7 @@ async function resetPin() {
     );
     document.getElementById('pin').disabled = true;
     document.getElementById('confirmPin').disabled = true;
-    document.querySelector('button').disabled = false;
+    document.querySelector('button').disabled = true;
   } catch (error) {
     let title = "Error";
     let message = "An error occurred while resetting your PIN.";
@@ -144,10 +144,12 @@ async function resetPin() {
     
     // Reset form state
     button.classList.remove('loading');
-    button.disabled = false; // Keep disabled until validation passes
+    button.disabled = true; // Keep disabled until validation passes
     pinInput.disabled = false;
     confirmPinInput.disabled = false;
     validatePins(); // Re-run validation
+  } finally {
+    button.classList.remove('loading');
   }
 }
 
@@ -167,7 +169,7 @@ function showModal(title, message, isError = true) {
     modalIcon.innerHTML = '<path class="checkmark" fill="none" stroke="currentColor" stroke-width="2" d="M20 6L9 17L4 12"/>';
     modalSubtitle.textContent = 'You can safely close this window now.';
     modalSubtitle.style.display = 'block';
-    modalButton.textContent = 'Close Window';
+    modalButton.innerHTML = '<span>Close</span>';
     modalIcon.classList.remove('error-icon');
     modalIcon.classList.add('success-icon');
   } else {
