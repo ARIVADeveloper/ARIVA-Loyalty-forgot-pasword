@@ -120,7 +120,7 @@ async function resetPin() {
     );
     document.getElementById('pin').disabled = true;
     document.getElementById('confirmPin').disabled = true;
-    document.querySelector('button').disabled = true;
+    document.querySelector('button').disabled = false;
   } catch (error) {
     let title = "Error";
     let message = "An error occurred while resetting your PIN.";
@@ -144,7 +144,7 @@ async function resetPin() {
     
     // Reset form state
     button.classList.remove('loading');
-    button.disabled = true; // Keep disabled until validation passes
+    button.disabled = false; // Keep disabled until validation passes
     pinInput.disabled = false;
     confirmPinInput.disabled = false;
     validatePins(); // Re-run validation
@@ -161,30 +161,35 @@ function showModal(title, message, isError = true) {
   
   modalTitle.textContent = title;
   modalMessage.innerHTML = message;
-  modalButton.disabled = false;
   
   if (!isError) {
+    // Success state
     modalIcon.innerHTML = '<path class="checkmark" fill="none" stroke="currentColor" stroke-width="2" d="M20 6L9 17L4 12"/>';
-    modalSubtitle.style.display = 'block';
     modalSubtitle.textContent = 'You can safely close this window now.';
+    modalSubtitle.style.display = 'block';
     modalButton.textContent = 'Close Window';
-    modalButton.onclick = () => {
+    modalIcon.classList.remove('error-icon');
+    modalIcon.classList.add('success-icon');
+  } else {
+    // Error state
+    modalIcon.innerHTML = '<path fill="currentColor" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/>';
+    modalSubtitle.style.display = 'none';
+    modalButton.textContent = 'Close';
+    modalIcon.classList.add('error-icon');
+    modalIcon.classList.remove('success-icon');
+  }
+
+  // Setup button click handler
+  modalButton.onclick = () => {
+    if (!isError) {
       window.close();
       // Fallback if window.close() is blocked
       setTimeout(() => {
         modalSubtitle.textContent = 'Please close this window manually';
-        closeModal();
       }, 100);
-    };
-  } else {
-    modalIcon.innerHTML = '<circle cx="12" cy="12" r="11" fill="currentColor" opacity="0.2"/><path fill="currentColor" d="M12 13.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM12 7.5a1 1 0 011 1v4a1 1 0 01-2 0v-4a1 1 0 011-1z"/>';
-    modalSubtitle.style.display = 'none';
-    modalButton.textContent = 'Close';
-    modalButton.onclick = closeModal;
-  }
-  
-  modalIcon.classList.toggle('error-icon', isError);
-  modalIcon.classList.toggle('success-icon', !isError);
+    }
+    closeModal();
+  };
   
   modal.classList.add('show');
 }

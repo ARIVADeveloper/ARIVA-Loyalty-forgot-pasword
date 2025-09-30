@@ -328,6 +328,7 @@ button.loading .spinner {
   min-width: 160px;
   opacity: 1;
   pointer-events: auto;
+  display: inline-block;
 }
 
 .modal-button:hover {
@@ -346,7 +347,7 @@ button.loading .spinner {
 }
 
 .error-icon {
-  fill: #dc3545;
+  color: var(--error-color);
 }
 
 .info-icon {
