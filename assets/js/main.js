@@ -174,8 +174,34 @@ function showModal(title, message, isError = true) {
     modalIcon.classList.remove('error-icon');
     modalIcon.classList.add('success-icon');
     
-    // Use the new closeWindowModal function
-    modalButton.onclick = closeWindowModal;
+    // New window closing logic
+    modalButton.onclick = () => {
+      modalContent.classList.add('loading');
+      modalButton.disabled = true;
+      modalButton.textContent = 'Closing...';
+      
+      // Try to close through opener first
+      if (window.opener && !window.opener.closed) {
+        window.opener.postMessage('closeResetWindow', '*');
+      }
+      
+      // Attempt normal close
+      setTimeout(() => {
+        try {
+          window.close();
+        } catch (e) {
+          console.log('Direct window.close() failed');
+        }
+        
+        // If we're still here after 1 second, show manual close message
+        setTimeout(() => {
+          modalContent.classList.remove('loading');
+          modalButton.disabled = false;
+          modalButton.textContent = 'Close Window';
+          modalSubtitle.textContent = 'Please close this window manually using your browser controls';
+        }, 1000);
+      }, 100);
+    };
   } else {
     // Error state
     modalIcon.innerHTML = '<path d="M11 15h2v2h-2zm0-8h2v6h-2zm1-4C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>';
@@ -184,49 +210,22 @@ function showModal(title, message, isError = true) {
     modalButton.textContent = 'Close';
     modalIcon.classList.add('error-icon');
     modalIcon.classList.remove('success-icon');
-    
-    // Setup button click handler
+  }
+
+  // Button click handler is already set above for success case
+  // For error case, just close the modal
+  if (isError) {
     modalButton.onclick = () => {
-      if (!isError) {
-        setTimeout(() => {
-          modalSubtitle.textContent = 'Please close this window manually';
-        }, 100);
-      }
       closeModal();
     };
   }
+  
+  modal.classList.add('show');
+}
 
-      modal.classList.add('show');
-    }
-
-// New function for closing the window from the success modal
-function closeWindowModal() {
-  const modal = document.getElementById('successModal');
-  const modalContent = modal.querySelector('.modal-content');
-  const modalButton = modal.querySelector('.modal-button');
-  const modalSubtitle = modal.querySelector('.modal-subtitle');
-
-  modalContent.classList.add('loading');
-  modalButton.disabled = true;
-  modalButton.textContent = 'Closing...';
-
-  if (window.opener && !window.opener.closed) {
-    window.opener.postMessage('closeResetWindow', '*');
-  }
-
-  setTimeout(() => {
-    try {
-      window.close();
-    } catch (e) {
-      console.log('Direct window.close() failed');
-    }
-    setTimeout(() => {
-      modalContent.classList.remove('loading');
-      modalButton.disabled = false;
-      modalButton.textContent = 'Close Window';
-      modalSubtitle.textContent = 'Please close this window manually using your browser controls';
-    }, 1000);
-  }, 100);
+function closeModal() {
+  const modal = document.getElementById('errorModal');
+  modal.classList.remove('show');
 }
 
 // Initialize page
@@ -298,4 +297,3 @@ document.addEventListener('DOMContentLoaded', function() {
 window.resetPin = resetPin;
 window.closeModal = closeModal;
 window.validatePins = validatePins;
-window.closeWindowModal = closeWindowModal;
