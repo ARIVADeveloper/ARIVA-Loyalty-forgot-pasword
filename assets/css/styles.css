@@ -164,6 +164,11 @@ input.error {
   background: transparent !important;
   border: none;
   outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 .input-icon:hover {
@@ -182,6 +187,10 @@ input.error {
   color: var(--primary-color);
   background: transparent !important;
   transform: translateY(-50%);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .input-icon svg {
