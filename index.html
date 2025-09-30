@@ -3,92 +3,240 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reset your ARIVA Loyalty PIN</title>
+  <title>Reset PIN</title>
   <style>
+    :root {
+      --primary-color: #007bff;
+      --primary-dark: #0056b3;
+      --success-color: #28a745;
+      --error-color: #dc3545;
+      --text-color: #333;
+      --text-secondary: #666;
+      --background-color: #f0f4fa;
+      --card-background: #fff;
+      --border-color: #e0e7ff;
+      --shadow-color: rgba(0, 0, 0, 0.06);
+      --animation-duration: 0.3s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       margin: 0;
       padding: 15px;
-      background: #f0f4fa;
-      box-sizing: border-box;
+      background: var(--background-color);
+      color: var(--text-color);
     }
+
     .container {
-      padding: 19px 20px 16px 20px;
-      background: #fff;
-      border: 1px solid #e0e7ff;
+      padding: 20px;
+      background: var(--card-background);
+      border: 1px solid var(--border-color);
       border-radius: 12px;
       width: 100%;
-      max-width: 350px;
+      max-width: 340px;
       text-align: center;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      box-shadow: 0 8px 30px var(--shadow-color);
       position: relative;
+      animation: fadeIn var(--animation-duration) ease-out;
+      backdrop-filter: blur(10px);
     }
     .logo {
-      width: clamp(50px, 15vw, 70px);
+      width: clamp(60px, 18vw, 85px);
       height: auto;
-      margin-bottom: 5px;
+      margin-bottom: 1px;
       display: inline-block;
+      transition: transform 0.3s ease;
     }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
     h2 {
-      font-size: clamp(1.2rem, 5vw, 1.5rem);
-      margin: 10px 0 15px 0;
+      font-size: clamp(1.3rem, 5vw, 1.7rem);
+      margin: 0 0 20px 0;
+      color: var(--text-color);
+      font-weight: 600;
     }
+
+    .form-group {
+      margin: 15px 0;
+    }
+
+    .input-container {
+      position: relative;
+      margin-bottom: -5px;
+    }
+
+    .input-container:last-child {
+      margin-bottom: -30px;
+    }
+
+    .input-label {
+      display: block;
+      text-align: left;
+      margin-bottom: 5px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
     input {
-      margin: 6px 0;
-      padding: 12px;
       width: 100%;
-      font-size: max(16px, 1rem);
-      border: 1px solid #bfcfff;
-      border-radius: 6px;
-      background: #f8faff;
-      transition: border-color 0.2s;
+      padding: 12px;
+      font-size: 0.95rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--card-background);
+      transition: all var(--animation-duration) ease;
       outline: none;
-      box-sizing: border-box;
       -webkit-appearance: none;
       appearance: none;
+    }
+
+    .validation-message {
+      display: block;
+      text-align: left;
+      font-size: 0.8rem;
+      color: var(--error-color);
+      margin-top: 4px;
+      min-height: 1em;
+      transition: all var(--animation-duration) ease;
+    }
+
+    .validation-message.match {
+      color: var(--success-color);
+    }
+
+    input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    input.error {
+      border-color: var(--error-color);
+      animation: shake 0.4s ease-in-out;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      pointer-events: none;
+      transition: all var(--animation-duration) ease;
     }
     input:focus {
       border-color: #007bff;
       background: #eef6ff;
     }
     button {
-      margin-top: 10px;
-      padding: 10px;
+      margin-top: 12px;
+      padding: 12px;
       width: 100%;
-      font-size: 16px;
-      background: #007bff;
+      font-size: 0.95rem;
+      background: var(--primary-color);
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
-      transition: background 0.2s;
+      font-weight: 600;
+      transition: all var(--animation-duration) ease;
+      position: relative;
+      overflow: hidden;
     }
-    button:hover, button:focus {
-      background: #0056b3;
+
+    button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
     }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    button .spinner {
+      display: none;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    button.loading {
+      color: transparent;
+    }
+
+    button.loading .spinner {
+      display: block;
+    }
+
     #message {
-      margin-top: 2px;
-      font-size: 14px;
-      color: red;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--error-color);
       min-height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity var(--animation-duration) ease;
     }
+
+    #message.show {
+      opacity: 1;
+    }
+
     #message.success {
-      color: #22bb33;
-      font-weight: bold;
+      color: var(--success-color);
+      font-weight: 500;
     }
+
     .success-icon {
       display: inline-block;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       vertical-align: middle;
     }
     .modal {
@@ -170,14 +318,44 @@
   <div class="container">
     <img src="assets/ariva-logo.png" alt="ARIVA Logo" class="logo" />
     <h2>Reset Your PIN</h2>
-    <input 
-      type="text" 
-      id="pin" 
-      placeholder="Enter 5-digit PIN" 
-      maxlength="5"
-      inputmode="numeric"
-    />
-    <button onclick="resetPin()">Reset PIN</button>
+    <div class="form-group">
+      <div class="input-container">
+        <label class="input-label" for="pin">New PIN</label>
+        <input 
+          type="text" 
+          id="pin" 
+          placeholder="Enter 5-digit PIN" 
+          maxlength="5"
+          inputmode="numeric"
+          autocomplete="off"
+          oninput="validatePins()"
+        />
+        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 15V17M6 9V7C6 4.23858 8.23858 2 11 2H13C15.7614 2 18 4.23858 18 7V9M6 9H18M6 9C4.89543 9 4 9.89543 4 11V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V11C20 9.89543 19.1046 9 18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="validation-message"></span>
+      </div>
+      <div class="input-container">
+        <label class="input-label" for="confirmPin">Confirm PIN</label>
+        <input 
+          type="text" 
+          id="confirmPin" 
+          placeholder="Re-enter 5-digit PIN" 
+          maxlength="5"
+          inputmode="numeric"
+          autocomplete="off"
+          oninput="validatePins()"
+        />
+        <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 15V17M6 9V7C6 4.23858 8.23858 2 11 2H13C15.7614 2 18 4.23858 18 7V9M6 9H18M6 9C4.89543 9 4 9.89543 4 11V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V11C20 9.89543 19.1046 9 18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="validation-message"></span>
+      </div>
+    </div>
+    <button onclick="resetPin()" disabled>
+      Reset PIN
+      <div class="spinner"></div>
+    </button>
     <p id="message"></p>
   </div>
 
@@ -202,17 +380,83 @@
       return pin.padEnd(6, "0");
     }
 
+    function validatePins() {
+      const pin = document.getElementById("pin");
+      const confirmPin = document.getElementById("confirmPin");
+      const button = document.querySelector('button');
+      const pinValidation = pin.nextElementSibling.nextElementSibling;
+      const confirmValidation = confirmPin.nextElementSibling.nextElementSibling;
+      
+      // Reset states
+      pin.classList.remove('error');
+      confirmPin.classList.remove('error');
+      pinValidation.textContent = '';
+      confirmValidation.textContent = '';
+      button.disabled = true;
+      
+      // Validate PIN format
+      if (pin.value.length > 0 && !/^\d+$/.test(pin.value)) {
+        pin.classList.add('error');
+        pinValidation.textContent = 'PIN must contain only numbers';
+        return;
+      }
+      
+      if (pin.value.length > 0 && pin.value.length !== 5) {
+        pin.classList.add('error');
+        pinValidation.textContent = 'PIN must be exactly 5 digits';
+        return;
+      }
+      
+      // Only validate confirm PIN if there's input
+      if (confirmPin.value.length > 0) {
+        if (pin.value !== confirmPin.value) {
+          confirmPin.classList.add('error');
+          confirmValidation.textContent = 'PINs do not match';
+          return;
+        } else if (pin.value.length === 5) {
+          confirmValidation.textContent = 'PINs match';
+          confirmValidation.classList.add('match');
+        }
+      }
+      
+      // Enable button only if both PINs are valid and matching
+      button.disabled = !(pin.value.length === 5 && pin.value === confirmPin.value);
+    }
+
     async function resetPin() {
       const params = new URLSearchParams(window.location.search);
       const oobCode = params.get("oobCode");
-      const pin = document.getElementById("pin").value.trim();
+      const pinInput = document.getElementById("pin");
+      const confirmPinInput = document.getElementById("confirmPin");
+      const pin = pinInput.value.trim();
+      const confirmPin = confirmPinInput.value.trim();
       const messageEl = document.getElementById("message");
+      const button = document.querySelector('button');
+
+      // Clear previous states
+      messageEl.className = "";
+      messageEl.innerText = "";
+      pinInput.classList.remove('error');
+      confirmPinInput.classList.remove('error');
 
       if (!/^\d{5}$/.test(pin)) {
-        messageEl.className = "";
-        messageEl.innerText = "PIN must be exactly 5 digits.";
+        pinInput.classList.add('error');
+        messageEl.className = "show";
+        messageEl.innerText = "PIN must be exactly 5 digits";
         return;
       }
+
+      if (pin !== confirmPin) {
+        confirmPinInput.classList.add('error');
+        messageEl.className = "show";
+        messageEl.innerText = "PINs do not match";
+        return;
+      }
+
+      // Show loading state
+      button.classList.add('loading');
+      button.disabled = true;
+      pinInput.disabled = true;
 
       const adjustedPin = formatPin(pin); // 🔹 padded automatically
 
@@ -245,6 +489,13 @@
         }
         
         showModal(title, message);
+        
+        // Reset form state
+        button.classList.remove('loading');
+        button.disabled = true; // Keep disabled until validation passes
+        pinInput.disabled = false;
+        confirmPinInput.disabled = false;
+        validatePins(); // Re-run validation
       }
     }
 
