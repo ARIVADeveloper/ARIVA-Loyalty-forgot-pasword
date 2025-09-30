@@ -157,27 +157,39 @@ function showModal(title, message, isError = true) {
   const modalMessage = modal.querySelector('.modal-message');
   const modalIcon = modal.querySelector('.modal-icon');
   const modalButton = modal.querySelector('.modal-button');
+  const modalSubtitle = modal.querySelector('.modal-subtitle');
   
   modalTitle.textContent = title;
-  modalMessage.textContent = message;
-  modalIcon.classList.toggle('error-icon', isError);
-  modalIcon.classList.toggle('info-icon', !isError);
+  modalMessage.innerHTML = message;
   
-  // Add close window message for success case
   if (!isError) {
-    modalMessage.innerHTML = `${message}<br><br><small>You can safely close this window now.</small>`;
+    modalIcon.innerHTML = '<path class="checkmark" fill="none" stroke="currentColor" stroke-width="2" d="M20 6L9 17L4 12"/>';
+    modalSubtitle.style.display = 'block';
     modalButton.textContent = 'Close Window';
-    modalButton.onclick = () => window.close();
+    modalButton.onclick = () => {
+      closeModal();
+      window.close();
+      // Fallback if window.close() is blocked
+      setTimeout(() => {
+        modalSubtitle.textContent = 'You can now close this window manually';
+      }, 100);
+    };
   } else {
+    modalIcon.innerHTML = '<circle cx="12" cy="12" r="11" fill="currentColor" opacity="0.2"/><path fill="currentColor" d="M12 13.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM12 7.5a1 1 0 011 1v4a1 1 0 01-2 0v-4a1 1 0 011-1z"/>';
+    modalSubtitle.style.display = 'none';
     modalButton.textContent = 'Close';
     modalButton.onclick = closeModal;
   }
+  
+  modalIcon.classList.toggle('error-icon', isError);
+  modalIcon.classList.toggle('success-icon', !isError);
   
   modal.classList.add('show');
 }
 
 function closeModal() {
-  document.getElementById('errorModal').classList.remove('show');
+  const modal = document.getElementById('errorModal');
+  modal.classList.remove('show');
 }
 
 // Initialize page
