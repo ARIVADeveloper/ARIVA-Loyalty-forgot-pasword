@@ -161,12 +161,13 @@ function showModal(title, message, isError = true) {
   
   modalTitle.textContent = title;
   modalMessage.innerHTML = message;
+  modalButton.disabled = false;
   
   if (!isError) {
     modalIcon.innerHTML = '<path class="checkmark" fill="none" stroke="currentColor" stroke-width="2" d="M20 6L9 17L4 12"/>';
     modalSubtitle.style.display = 'block';
+    modalSubtitle.textContent = 'You can safely close this window now.';
     modalButton.textContent = 'Close Window';
-    modalButton.disabled = false;
     modalButton.onclick = () => {
       window.close();
       // Fallback if window.close() is blocked
@@ -179,7 +180,6 @@ function showModal(title, message, isError = true) {
     modalIcon.innerHTML = '<circle cx="12" cy="12" r="11" fill="currentColor" opacity="0.2"/><path fill="currentColor" d="M12 13.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM12 7.5a1 1 0 011 1v4a1 1 0 01-2 0v-4a1 1 0 011-1z"/>';
     modalSubtitle.style.display = 'none';
     modalButton.textContent = 'Close';
-    modalButton.disabled = false;
     modalButton.onclick = closeModal;
   }
   
