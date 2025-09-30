@@ -326,6 +326,8 @@ button.loading .spinner {
   cursor: pointer;
   transition: all 0.2s;
   min-width: 160px;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .modal-button:hover {
@@ -335,6 +337,12 @@ button.loading .spinner {
 
 .modal-button:active {
   transform: translateY(0);
+}
+
+.modal-button:disabled {
+  background: var(--primary-color);
+  opacity: 1;
+  cursor: pointer;
 }
 
 .error-icon {
