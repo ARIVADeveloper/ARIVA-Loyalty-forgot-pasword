@@ -196,12 +196,12 @@ function showModal(title, message, isError = true) {
     };
   }
 
-  modal.classList.add('show');
-}
+      modal.classList.add('show');
+    }
 
 // New function for closing the window from the success modal
 function closeWindowModal() {
-  const modal = document.getElementById('errorModal');
+  const modal = document.getElementById('successModal');
   const modalContent = modal.querySelector('.modal-content');
   const modalButton = modal.querySelector('.modal-button');
   const modalSubtitle = modal.querySelector('.modal-subtitle');
