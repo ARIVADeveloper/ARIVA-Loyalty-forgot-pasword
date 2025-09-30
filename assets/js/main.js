@@ -214,13 +214,6 @@ function showModal(title, message, isError = true) {
 
   // Setup button click handler
   modalButton.onclick = () => {
-    if (!isError) {
-      window.close();
-      // Fallback if window.close() is blocked
-      setTimeout(() => {
-        modalSubtitle.textContent = 'Please close this window manually';
-      }, 100);
-    }
     closeModal();
   };
   
