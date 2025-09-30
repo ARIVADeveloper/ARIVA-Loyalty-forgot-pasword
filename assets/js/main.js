@@ -162,65 +162,103 @@ function showModal(title, message, isError = true) {
   const modalButton = modal.querySelector('.modal-button');
   const modalSubtitle = modal.querySelector('.modal-subtitle');
   
+  // Set common modal content
   modalTitle.textContent = title;
   modalMessage.innerHTML = message;
   
+  // Clear previous classes
+  modalIcon.classList.remove('error-icon', 'success-icon');
+  modalButton.disabled = false;
+  modalContent.classList.remove('loading');
+  
   if (!isError) {
-    // Success state
-    modalIcon.innerHTML = '<path class="checkmark" fill="none" stroke="currentColor" stroke-width="2" d="M20 6L9 17L4 12"/>';
-    modalSubtitle.textContent = 'You can safely close this window now.';
-    modalSubtitle.style.display = 'block';
-    modalButton.textContent = 'Close Window';
-    modalIcon.classList.remove('error-icon');
-    modalIcon.classList.add('success-icon');
-    
-    // New window closing logic
-    modalButton.onclick = () => {
-      modalContent.classList.add('loading');
-      modalButton.disabled = true;
-      modalButton.textContent = 'Closing...';
-      
-      // Try to close through opener first
-      if (window.opener && !window.opener.closed) {
-        window.opener.postMessage('closeResetWindow', '*');
-      }
-      
-      // Attempt normal close
-      setTimeout(() => {
-        try {
-          window.close();
-        } catch (e) {
-          console.log('Direct window.close() failed');
-        }
-        
-        // If we're still here after 1 second, show manual close message
-        setTimeout(() => {
-          modalContent.classList.remove('loading');
-          modalButton.disabled = false;
-          modalButton.textContent = 'Close Window';
-          modalSubtitle.textContent = 'Please close this window manually using your browser controls';
-        }, 1000);
-      }, 100);
-    };
+    // Success state - PIN reset successful
+    setupSuccessModal(modalIcon, modalSubtitle, modalButton, modalContent);
   } else {
     // Error state
-    modalIcon.innerHTML = '<path d="M11 15h2v2h-2zm0-8h2v6h-2zm1-4C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>';
-    modalIcon.setAttribute('viewBox', '0 0 24 24');
-    modalSubtitle.style.display = 'none';
-    modalButton.textContent = 'Close';
-    modalIcon.classList.add('error-icon');
-    modalIcon.classList.remove('success-icon');
-  }
-
-  // Button click handler is already set above for success case
-  // For error case, just close the modal
-  if (isError) {
-    modalButton.onclick = () => {
-      closeModal();
-    };
+    setupErrorModal(modalIcon, modalSubtitle, modalButton);
   }
   
   modal.classList.add('show');
+}
+
+function setupSuccessModal(modalIcon, modalSubtitle, modalButton, modalContent) {
+  // Success icon
+  modalIcon.innerHTML = '<path class="checkmark" fill="none" stroke="currentColor" stroke-width="2" d="M20 6L9 17L4 12"/>';
+  modalIcon.classList.add('success-icon');
+  
+  // Success message
+  modalSubtitle.textContent = 'You can safely close this window now.';
+  modalSubtitle.style.display = 'block';
+  
+  // Button setup
+  modalButton.textContent = 'Close Window';
+  modalButton.onclick = () => handleWindowClose(modalContent, modalButton, modalSubtitle);
+}
+
+function setupErrorModal(modalIcon, modalSubtitle, modalButton) {
+  // Error icon
+  modalIcon.innerHTML = '<path d="M11 15h2v2h-2zm0-8h2v6h-2zm1-4C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>';
+  modalIcon.setAttribute('viewBox', '0 0 24 24');
+  modalIcon.classList.add('error-icon');
+  
+  // Hide subtitle for errors
+  modalSubtitle.style.display = 'none';
+  
+  // Button setup
+  modalButton.textContent = 'Close';
+  modalButton.onclick = () => closeModal();
+}
+
+function handleWindowClose(modalContent, modalButton, modalSubtitle) {
+  // Show loading state
+  modalContent.classList.add('loading');
+  modalButton.disabled = true;
+  modalButton.textContent = 'Closing...';
+  
+  // Try multiple methods to close the window
+  let windowClosed = false;
+  
+  // Method 1: Try to close through opener
+  if (window.opener && !window.opener.closed) {
+    try {
+      window.opener.postMessage('closeResetWindow', '*');
+      windowClosed = true;
+    } catch (e) {
+      console.log('Failed to close through opener');
+    }
+  }
+  
+  // Method 2: Try direct window.close()
+  if (!windowClosed) {
+    try {
+      window.close();
+      windowClosed = true;
+    } catch (e) {
+      console.log('Direct window.close() failed');
+    }
+  }
+  
+  // Method 3: Try to navigate away
+  if (!windowClosed) {
+    try {
+      window.location.href = 'about:blank';
+      windowClosed = true;
+    } catch (e) {
+      console.log('Navigation failed');
+    }
+  }
+  
+  // If all methods failed, show manual close message
+  setTimeout(() => {
+    if (!windowClosed) {
+      modalContent.classList.remove('loading');
+      modalButton.disabled = false;
+      modalButton.textContent = 'Close Window';
+      modalSubtitle.textContent = 'Please close this window manually using your browser controls';
+      modalSubtitle.style.display = 'block';
+    }
+  }, 2000);
 }
 
 function closeModal() {
@@ -293,7 +331,29 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Form submission handler
+function handleFormSubmit(e) {
+  e.preventDefault();
+  resetPin();
+}
+
+// Toggle PIN visibility function
+function togglePinVisibility(inputId) {
+  const input = document.getElementById(inputId);
+  const icon = input.nextElementSibling.querySelector('svg path');
+  
+  if (input.type === "password") {
+    input.type = "number";
+    icon.setAttribute('d', 'M12 5.25C4.5 5.25 1.5 12 1.5 12C1.5 12 4.5 18.75 12 18.75C19.5 18.75 22.5 12 22.5 12C22.5 12 19.5 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z');
+  } else {
+    input.type = "password";
+    icon.setAttribute('d', 'M12 5.25C7.92 5.25 4.25 7.92 4.25 12C4.25 16.08 7.92 18.75 12 18.75C16.08 18.75 19.75 16.08 19.75 12C19.75 7.92 16.08 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z');
+  }
+}
+
 // Export functions that need to be globally available
 window.resetPin = resetPin;
 window.closeModal = closeModal;
 window.validatePins = validatePins;
+window.togglePinVisibility = togglePinVisibility;
+window.handleFormSubmit = handleFormSubmit;

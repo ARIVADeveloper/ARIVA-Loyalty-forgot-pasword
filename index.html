@@ -3,90 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reset PIN</title>
+  <title>Reset PIN - ARIVA Loyalty</title>
+  <meta name="description" content="Reset your ARIVA Loyalty PIN securely">
   <link rel="stylesheet" href="assets/css/styles.css">
   <script type="module" src="assets/js/main.js"></script>
 </head>
 <body>
-  <!-- Error Modal -->
-  <div id="errorModal" class="modal">
+  <!-- Modal for both success and error messages -->
+  <div id="errorModal" class="modal" role="dialog" aria-labelledby="modal-title" aria-describedby="modal-message">
     <div class="modal-content">
-      <div class="modal-spinner"></div>
-      <svg class="modal-icon" viewBox="0 0 24 24"></svg>
-      <h3 class="modal-title"></h3>
-      <p class="modal-message"></p>
+      <div class="modal-spinner" aria-hidden="true"></div>
+      <svg class="modal-icon" viewBox="0 0 24 24" aria-hidden="true"></svg>
+      <h3 id="modal-title" class="modal-title"></h3>
+      <p id="modal-message" class="modal-message"></p>
       <p class="modal-subtitle"></p>
-      <button type="button" class="modal-button"></button>
+      <button type="button" class="modal-button" aria-label="Close modal"></button>
     </div>
   </div>
 
-  <!-- Success Modal -->
-  <div id="successModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-spinner"></div>
-      <svg class="modal-icon" viewBox="0 0 24 24"></svg>
-      <h3 class="modal-title"></h3>
-      <p class="modal-message"></p>
-      <p class="modal-subtitle"></p>
-      <button type="button" class="modal-button"></button>
-    </div>
-  </div>
-
-  <div class="container">
+  <main class="container">
     <img src="assets/ariva-logo.png" alt="ARIVA Logo" class="logo" />
-    <h2>Reset Your PIN</h2>
-    <div class="form-group">
-      <div class="input-container">
-        <label class="input-label" for="pin">New PIN</label>
-        <input 
-          type="password" 
-          id="pin" 
-          placeholder="Enter 5-digit PIN" 
-          maxlength="5"
-          inputmode="numeric"
-          pattern="\d*"
-          autocomplete="off"
-          oninput="validatePins()"
-          onkeypress="return onlyNumberKey(event)"
-        />
-        <svg class="input-icon eye-icon" onclick="togglePinVisibility('pin')" width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M12 5.25C7.92 5.25 4.25 7.92 4.25 12C4.25 16.08 7.92 18.75 12 18.75C16.08 18.75 19.75 16.08 19.75 12C19.75 7.92 16.08 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-        <span class="validation-message"></span>
+    <h1>Reset Your PIN</h1>
+    
+    <form id="pinResetForm" novalidate>
+      <div class="form-group">
+        <div class="input-container">
+          <label class="input-label" for="pin">New PIN</label>
+          <input 
+            type="password" 
+            id="pin" 
+            name="pin"
+            placeholder="Enter 5-digit PIN" 
+            maxlength="5"
+            inputmode="numeric"
+            pattern="\d{5}"
+            autocomplete="new-password"
+            required
+            aria-describedby="pin-validation"
+          />
+          <button 
+            type="button" 
+            class="input-icon eye-icon" 
+            onclick="togglePinVisibility('pin')" 
+            aria-label="Toggle PIN visibility"
+            tabindex="0"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5.25C7.92 5.25 4.25 7.92 4.25 12C4.25 16.08 7.92 18.75 12 18.75C16.08 18.75 19.75 16.08 19.75 12C19.75 7.92 16.08 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </button>
+          <span id="pin-validation" class="validation-message" role="alert" aria-live="polite"></span>
+        </div>
+        
+        <div class="input-container">
+          <label class="input-label" for="confirmPin">Confirm PIN</label>
+          <input 
+            type="password" 
+            id="confirmPin" 
+            name="confirmPin"
+            placeholder="Re-enter 5-digit PIN" 
+            maxlength="5"
+            inputmode="numeric"
+            pattern="\d{5}"
+            autocomplete="new-password"
+            required
+            aria-describedby="confirmPin-validation"
+          />
+          <button 
+            type="button" 
+            class="input-icon eye-icon" 
+            onclick="togglePinVisibility('confirmPin')" 
+            aria-label="Toggle PIN visibility"
+            tabindex="0"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5.25C7.92 5.25 4.25 7.92 4.25 12C4.25 16.08 7.92 18.75 12 18.75C16.08 18.75 19.75 16.08 19.75 12C19.75 7.92 16.08 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </button>
+          <span id="confirmPin-validation" class="validation-message" role="alert" aria-live="polite"></span>
+        </div>
       </div>
-      <div class="input-container">
-        <label class="input-label" for="confirmPin">Confirm PIN</label>
-        <input 
-          type="password" 
-          id="confirmPin" 
-          placeholder="Re-enter 5-digit PIN" 
-          maxlength="5"
-          inputmode="numeric"
-          pattern="\d*"
-          autocomplete="off"
-          oninput="validatePins()"
-          onkeypress="return onlyNumberKey(event)"
-        />
-        <svg class="input-icon eye-icon" onclick="togglePinVisibility('confirmPin')" width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M12 5.25C7.92 5.25 4.25 7.92 4.25 12C4.25 16.08 7.92 18.75 12 18.75C16.08 18.75 19.75 16.08 19.75 12C19.75 7.92 16.08 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z" stroke="currentColor" stroke-width="1.5"/>
-        </svg>
-        <span class="validation-message"></span>
-      </div>
-    </div>
-    <button onclick="resetPin()" disabled>
-      <span>Reset PIN</span>
-      <div class="spinner"></div>
-    </button>
-    <p id="message"></p>
-  </div>
+      
+      <button type="submit" id="resetButton" disabled>
+        <span>Reset PIN</span>
+        <div class="spinner" aria-hidden="true"></div>
+      </button>
+      
+      <p id="message" class="message" role="alert" aria-live="polite"></p>
+    </form>
+  </main>
+
   <script>
+    // Move inline functions to main.js for better organization
+    // These are kept here temporarily for backward compatibility
     function onlyNumberKey(evt) {
-      // Only ASCII characters 48-57 (0-9)
-      var ASCIICode = (evt.which) ? evt.which : evt.keyCode;
+      const ASCIICode = (evt.which) ? evt.which : evt.keyCode;
       if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) {
         return false;
       }
-      // Check length
       const input = evt.target;
       if (input.value.length >= 5) {
         return false;
@@ -96,17 +110,24 @@
 
     function togglePinVisibility(inputId) {
       const input = document.getElementById(inputId);
-      const icon = input.nextElementSibling;
+      const icon = input.nextElementSibling.querySelector('svg path');
       
       if (input.type === "password") {
         input.type = "number";
-        icon.innerHTML = `<path d="M12 5.25C4.5 5.25 1.5 12 1.5 12C1.5 12 4.5 18.75 12 18.75C19.5 18.75 22.5 12 22.5 12C22.5 12 19.5 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z" stroke="currentColor" stroke-width="1.5"/>`;
+        icon.setAttribute('d', 'M12 5.25C4.5 5.25 1.5 12 1.5 12C1.5 12 4.5 18.75 12 18.75C19.5 18.75 22.5 12 22.5 12C22.5 12 19.5 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z');
       } else {
         input.type = "password";
-        icon.innerHTML = `<path d="M12 5.25C7.92 5.25 4.25 7.92 4.25 12C4.25 16.08 7.92 18.75 12 18.75C16.08 18.75 19.75 16.08 19.75 12C19.75 7.92 16.08 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z" stroke="currentColor" stroke-width="1.5"/>`;
+        icon.setAttribute('d', 'M12 5.25C7.92 5.25 4.25 7.92 4.25 12C4.25 16.08 7.92 18.75 12 18.75C16.08 18.75 19.75 16.08 19.75 12C19.75 7.92 16.08 5.25 12 5.25ZM12 15.75C10.07 15.75 8.5 14.18 8.5 12.25C8.5 10.32 10.07 8.75 12 8.75C13.93 8.75 15.5 10.32 15.5 12.25C15.5 14.18 13.93 15.75 12 15.75Z');
       }
     }
+
+    // Form submission handler
+    document.getElementById('pinResetForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (typeof window.handleFormSubmit === 'function') {
+        window.handleFormSubmit(e);
+      }
+    });
   </script>
 </body>
-</html>
 </html>
