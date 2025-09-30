@@ -174,10 +174,25 @@ function showModal(title, message, isError = true) {
     modalIcon.classList.remove('error-icon');
     modalIcon.classList.add('success-icon');
     
-    // Add loading state when trying to close window
+    // Updated window closing logic
     modalButton.onclick = () => {
       modalContent.classList.add('loading');
-      window.close();
+      
+      // Try multiple methods to close the window
+      const closeWindow = () => {
+        window.close();
+        window.open('', '_self').close();
+        window.location.href = 'about:blank';
+        window.open('', '_self', '');
+        window.top.close();
+      };
+
+      try {
+        closeWindow();
+      } catch (e) {
+        console.log('Could not close window automatically');
+      }
+
       // Fallback if window.close() is blocked
       setTimeout(() => {
         modalContent.classList.remove('loading');
@@ -187,7 +202,8 @@ function showModal(title, message, isError = true) {
     };
   } else {
     // Error state
-    modalIcon.innerHTML = '<path fill="currentColor" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/>';
+    modalIcon.innerHTML = '<path d="M11 15h2v2h-2zm0-8h2v6h-2zm1-4C7.03 3 3 7.03 3 12s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>';
+    modalIcon.setAttribute('viewBox', '0 0 24 24');
     modalSubtitle.style.display = 'none';
     modalButton.textContent = 'Close';
     modalIcon.classList.add('error-icon');

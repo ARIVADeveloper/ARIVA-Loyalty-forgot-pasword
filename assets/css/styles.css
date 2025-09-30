@@ -279,31 +279,23 @@ button.loading .spinner {
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
-.modal-spinner {
-  display: none;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(0, 123, 255, 0.2);
-  border-radius: 50%;
-  border-top-color: var(--primary-color);
-  animation: modal-spin 1s linear infinite;
+.modal-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 20px;
+  color: var(--success-color);
 }
 
-.modal-content.loading .modal-spinner {
-  display: block;
+.checkmark {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: dash 1s ease-in-out forwards;
 }
 
-.modal-content.loading > *:not(.modal-spinner) {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-@keyframes modal-spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .modal-title {
@@ -359,6 +351,13 @@ button.loading .spinner {
 
 .error-icon {
   color: var(--error-color);
+  width: 48px;
+  height: 48px;
+}
+
+.error-icon path {
+  transform-origin: center;
+  transform: scale(0.9);
 }
 
 .info-icon {
