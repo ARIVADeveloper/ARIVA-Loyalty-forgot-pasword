@@ -295,15 +295,23 @@ button.loading .spinner {
   line-height: 1.4;
 }
 
+.modal-message small {
+  display: block;
+  margin-top: 10px;
+  color: #888;
+  font-size: 0.85rem;
+}
+
 .modal-button {
   background: #007bff;
   color: white;
   border: none;
-  padding: 10px 25px;
+  padding: 12px 30px;
   border-radius: 6px;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  min-width: 120px;
 }
 
 .modal-button:hover {

@@ -114,11 +114,12 @@ async function resetPin() {
   try {
     await confirmPasswordReset(auth, oobCode, adjustedPin);
     showModal(
-      "Success!",
-      "Your PIN has been reset successfully. You can now log in with your new PIN.",
+      "PIN Reset Successful!",
+      "Your PIN has been successfully reset. You can now use your new PIN to log in to the ARIVA Loyalty app.",
       false
     );
     document.getElementById('pin').disabled = true;
+    document.getElementById('confirmPin').disabled = true;
     document.querySelector('button').disabled = true;
   } catch (error) {
     let title = "Error";
@@ -155,11 +156,22 @@ function showModal(title, message, isError = true) {
   const modalTitle = modal.querySelector('.modal-title');
   const modalMessage = modal.querySelector('.modal-message');
   const modalIcon = modal.querySelector('.modal-icon');
+  const modalButton = modal.querySelector('.modal-button');
   
   modalTitle.textContent = title;
   modalMessage.textContent = message;
   modalIcon.classList.toggle('error-icon', isError);
   modalIcon.classList.toggle('info-icon', !isError);
+  
+  // Add close window message for success case
+  if (!isError) {
+    modalMessage.innerHTML = `${message}<br><br><small>You can safely close this window now.</small>`;
+    modalButton.textContent = 'Close Window';
+    modalButton.onclick = () => window.close();
+  } else {
+    modalButton.textContent = 'Close';
+    modalButton.onclick = closeModal;
+  }
   
   modal.classList.add('show');
 }
