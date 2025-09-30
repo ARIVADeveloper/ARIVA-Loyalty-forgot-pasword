@@ -155,6 +155,7 @@ async function resetPin() {
 
 function showModal(title, message, isError = true) {
   const modal = document.getElementById('errorModal');
+  const modalContent = modal.querySelector('.modal-content');
   const modalTitle = modal.querySelector('.modal-title');
   const modalMessage = modal.querySelector('.modal-message');
   const modalIcon = modal.querySelector('.modal-icon');
@@ -169,9 +170,21 @@ function showModal(title, message, isError = true) {
     modalIcon.innerHTML = '<path class="checkmark" fill="none" stroke="currentColor" stroke-width="2" d="M20 6L9 17L4 12"/>';
     modalSubtitle.textContent = 'You can safely close this window now.';
     modalSubtitle.style.display = 'block';
-    modalButton.innerHTML = '<span>Close</span>';
+    modalButton.textContent = 'Close Window';
     modalIcon.classList.remove('error-icon');
     modalIcon.classList.add('success-icon');
+    
+    // Add loading state when trying to close window
+    modalButton.onclick = () => {
+      modalContent.classList.add('loading');
+      window.close();
+      // Fallback if window.close() is blocked
+      setTimeout(() => {
+        modalContent.classList.remove('loading');
+        modalSubtitle.textContent = 'Please close this window manually';
+        closeModal();
+      }, 1000);
+    };
   } else {
     // Error state
     modalIcon.innerHTML = '<path fill="currentColor" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/>';
